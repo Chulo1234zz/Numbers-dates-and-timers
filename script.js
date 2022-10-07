@@ -26,7 +26,7 @@ const account1 = {
     '2022-10-06T10:51:36.790Z',
   ],
   currency: 'EUR',
-  locale: 'pt-PT', // de-DE
+  locale: 'en-GB', // de-DE
 };
 
 const account2 = {
@@ -80,7 +80,7 @@ const inputClosePin = document.querySelector('.form__input--pin');
 
 /////////////////////////////////////////////////
 // Functions
-const formatMovementDate = function (date) {
+const formatMovementDate = function (date,locale) {
   const calcDaysPassed = (date1, date2) =>
     Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 
@@ -89,11 +89,12 @@ const formatMovementDate = function (date) {
   if (daysPassed === 0) return 'Today';
   if (daysPassed === 1) return 'Yesterday';
   if (daysPassed > 1 && daysPassed <= 7) return `${daysPassed} days ago`;
-  else {
+  else {/* 
     const day1 = `${date.getDate()}`.padStart(2, 0);
     const month1 = `${date.getMonth() + 1}`.padStart(2, 0);
     const year1 = `${date.getFullYear()}`.padStart(2, 0);
-    return `${day1}/${month1},${year1}`;
+    return `${day1}/${month1},${year1}`; */
+    return new Intl.DateTimeFormat(locale).format(date);
   }
 };
 
@@ -109,7 +110,7 @@ const displayMovements = function (acc, sort = false) {
     const presentDate = new Date();
     // console.log(presentDate);
     const date = new Date(acc.movementsDates[i]);
-    const displayDate = formatMovementDate(date);
+    const displayDate = formatMovementDate(date,acc.locale);
     // console.log(date);
 
     const html = `
@@ -213,15 +214,15 @@ btnLogin.addEventListener('click', function (e) {
       hour: 'numeric',
       minute: 'numeric',
       day: 'numeric',
-      month: 'long',
+      month: 'numeric',
       year: 'numeric',
-      weekday: 'long',
+      // weekday: 'long',
     };
 
     // getting the locale from the users computer
-    const locale = navigator.language;
-    console.log(locale);
-    labelDate.textContent = new Intl.DateTimeFormat(locale, options).format(
+    // const locale = navigator.language;
+    // console.log(locale);
+    labelDate.textContent = new Intl.DateTimeFormat(currentAccount.locale, options).format(
       new2
     ); //pass in the locale(language-country) and
     // Clear input fields
